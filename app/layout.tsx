@@ -4,6 +4,7 @@ import "./globals.css";
 import { ReduxProvider } from "@/providers/redux-provider";
 import Header from "@/components/common/header";
 import { Toaster } from "@/components/ui/sonner";
+import Head from "next/head";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -23,6 +24,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <Head>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1, viewport-fit=cover"
+        />
+      </Head>
       <body className={poppins.className}>
         <ReduxProvider>
           <Toaster richColors position="top-right" />
