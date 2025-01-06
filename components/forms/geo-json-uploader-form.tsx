@@ -59,6 +59,7 @@ const GeoJsonUploaderForm = <TFieldValues extends FieldValues>({
       });
       return features.length > 0;
     } catch (err) {
+      console.error(err);
       return false;
     }
   };

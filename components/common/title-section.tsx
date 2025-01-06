@@ -34,7 +34,7 @@ const TitleSection = () => {
         }}
       >
         <Text type={"bigBody"} className={""}>
-          Let's create a new project...
+          Let&apos;s create a new project...
         </Text>
       </motion.div>
     </div>
