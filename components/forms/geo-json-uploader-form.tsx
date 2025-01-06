@@ -53,13 +53,12 @@ const GeoJsonUploaderForm = <TFieldValues extends FieldValues>({
   const validateGeoJSON = (text: string): boolean => {
     try {
       const format = new GeoJSON();
-      const features = format.readFeatures(text, {
+      const features = format?.readFeatures(text, {
         dataProjection: "EPSG:4326",
         featureProjection: "EPSG:3857",
       });
       return features.length > 0;
-    } catch (err) {
-      console.error(err);
+    } catch {
       return false;
     }
   };
@@ -111,7 +110,7 @@ const GeoJsonUploaderForm = <TFieldValues extends FieldValues>({
     <div>
       {label && (
         <Text type={"smallBody"}>
-          <label className={`block ${error ? "text-red-500" : ""}`}>
+          <label className={`block ${error ? "text-red-400" : ""}`}>
             {label}
           </label>
         </Text>
@@ -150,7 +149,7 @@ const GeoJsonUploaderForm = <TFieldValues extends FieldValues>({
         </div>
       </div>
       {error && (
-        <p className="text-xs text-red-500 mt-1">
+        <p className="text-xs text-red-400 mt-1">
           {error?.data?.message || error?.message}
         </p>
       )}

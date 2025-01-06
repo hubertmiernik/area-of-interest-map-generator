@@ -67,7 +67,7 @@ const InputForm = <
         />
       )}
       {error && (
-        <p className={"text-xs text-red-600 absolute"}>{error.message}</p>
+        <p className={"text-xs text-red-400 absolute"}>{error.message}</p>
       )}
     </div>
   );

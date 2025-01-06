@@ -33,6 +33,7 @@ export default {
           )
         `,
       },
+
       backgroundColor: {
         "custom-color": "hsla(180,70%,21%,1)",
       },
@@ -45,6 +46,7 @@ export default {
         tmp06: "#767F7D",
         tmp07: "#C2cbc9",
         tmp08: "#e8e300",
+        tmp09: "#a5aeac",
         border: "#727876",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",

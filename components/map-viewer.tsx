@@ -6,6 +6,7 @@ import VectorSource from "ol/source/Vector";
 import { OSM } from "ol/source";
 import GeoJSON from "ol/format/GeoJSON";
 import "ol/ol.css";
+import { useBreakpoint } from "@/hooks/common/use-breakpoint";
 
 interface MapViewerProps {
   geojsonData: string;
@@ -18,6 +19,7 @@ const MapViewer: React.FC<MapViewerProps> = ({ geojsonData, className }) => {
   const mapInstanceRef = useRef<Map | null>(null);
   const vectorLayerRef = useRef<VectorLayer | null>(null);
   const previousGeojsonData = useRef<string | null>(null);
+  const { isMd } = useBreakpoint("md");
 
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return;
@@ -34,7 +36,7 @@ const MapViewer: React.FC<MapViewerProps> = ({ geojsonData, className }) => {
       target: mapRef.current,
       layers: [baseLayer, vectorLayer],
       view: new View({
-        zoom: 5,
+        zoom: isMd ? 5 : 3,
       }),
     });
     vectorLayerRef.current = vectorLayer;

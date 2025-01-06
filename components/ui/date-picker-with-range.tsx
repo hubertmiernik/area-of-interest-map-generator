@@ -47,7 +47,7 @@ export function DatePickerWithRange({
             variant={"outline"}
             className={cn(
               "bg-transparent border-border justify-start text-left font-normal text-tmp07 hover:bg-transparent hover:text-tmp07",
-              !value && "text-muted-foreground",
+              !value && "text-tmp09",
             )}
           >
             <CalendarIcon />

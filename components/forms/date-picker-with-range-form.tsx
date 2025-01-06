@@ -54,21 +54,21 @@ const DatePickerWithRangeForm = <
     <div className={className}>
       {label && (
         <Text type={"smallBody"}>
-          <label className={`block ${error ? "text-red-600" : ""}`}>
+          <label className={`block ${error ? "text-red-400" : ""}`}>
             {label}
           </label>
         </Text>
       )}
       <DatePickerWithRange
-        className={`${error && "border-red-600"} w-full`}
+        className={`${error && "border-red-400"} w-full`}
         value={value}
         onChange={handleDateChange}
       />
       {error?.from && (
-        <p className="text-xs text-red-600 mt-1">{error.from?.message}</p>
+        <p className="text-xs text-red-400 mt-1">{error.from?.message}</p>
       )}
       {error?.to && (
-        <p className="text-xs text-red-600 mt-1">{error.to?.message}</p>
+        <p className="text-xs text-red-400 mt-1">{error.to?.message}</p>
       )}
     </div>
   );
