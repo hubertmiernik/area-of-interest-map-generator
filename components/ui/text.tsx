@@ -17,7 +17,7 @@ export type TextProps = {
 };
 
 const Text = ({ type = "body", children, bold, className }: TextProps) => {
-  const baseStyles = "text-textPrimary";
+  const baseStyles = "text-tmp07";
   const boldStyle = bold && "font-bold";
 
   const typeStyles: Record<TextProps["type"], string> = {

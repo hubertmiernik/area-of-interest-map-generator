@@ -13,8 +13,19 @@ import {
   FieldValues,
   UseControllerProps,
   UseFormSetError,
+  UseFormClearErrors,
+  FieldError,
 } from "react-hook-form";
 import GeoJSON from "ol/format/GeoJSON";
+import {
+  CreateProjectFormFields,
+  CreateProjectFormValues,
+} from "@/hooks/forms/use-create-project-form";
+
+type ExtendedFieldError = FieldError & {
+  data?: FieldError;
+  fileName?: FieldError;
+};
 
 type GeoJsonUploaderProps<
   TFieldValues extends FieldValues = FieldValues,
@@ -22,21 +33,22 @@ type GeoJsonUploaderProps<
 > = UseControllerProps<TFieldValues, TFieldName> & {
   label?: string;
   className?: string;
-  setError: UseFormSetError<TFieldValues>; // Dodaj setError
+  setError: UseFormSetError<TFieldValues>;
+  clearErrors: UseFormClearErrors<CreateProjectFormValues>;
 };
 
-const FileUploaderForm = <TFieldValues extends FieldValues>({
+const GeoJsonUploaderForm = <TFieldValues extends FieldValues>({
   name,
   control,
   className,
   label,
   setError,
+  clearErrors,
 }: GeoJsonUploaderProps<TFieldValues>) => {
   const { field, fieldState } = useController({ name, control });
-  const [fileName, setFileName] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
-  const { error } = fieldState;
+  const { error } = fieldState as { error: ExtendedFieldError | undefined };
 
   const validateGeoJSON = (text: string): boolean => {
     try {
@@ -45,7 +57,6 @@ const FileUploaderForm = <TFieldValues extends FieldValues>({
         dataProjection: "EPSG:4326",
         featureProjection: "EPSG:3857",
       });
-
       return features.length > 0;
     } catch (err) {
       return false;
@@ -53,13 +64,12 @@ const FileUploaderForm = <TFieldValues extends FieldValues>({
   };
 
   const handleFile = (file: File) => {
-    setFileName(file.name);
     const reader = new FileReader();
     reader.onload = (e) => {
       const text = e.target?.result as string;
       if (validateGeoJSON(text)) {
-        field.onChange(text);
-        setError(name, { type: "manual", message: "" });
+        field.onChange({ data: text, fileName: file.name });
+        clearErrors(CreateProjectFormFields.AREA_OF_INTEREST);
       } else {
         field.onChange(null);
         setError(name, { type: "manual", message: "Invalid GeoJSON format" });
@@ -94,16 +104,16 @@ const FileUploaderForm = <TFieldValues extends FieldValues>({
     }
   };
 
+  const uploadedFileName = field.value?.fileName || null;
+
   return (
     <div>
       {label && (
-        <label
-          className={`block text-sm font-medium mb-2 ${
-            error ? "text-red-500" : ""
-          }`}
-        >
-          {label}
-        </label>
+        <Text type={"smallBody"}>
+          <label className={`block ${error ? "text-red-500" : ""}`}>
+            {label}
+          </label>
+        </Text>
       )}
       <div
         onClick={() => document.getElementById("geojson-upload")?.click()}
@@ -111,7 +121,7 @@ const FileUploaderForm = <TFieldValues extends FieldValues>({
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         className={cn(
-          `w-fit border border-dashed rounded-sm p-4 text-center cursor-pointer transition-colors ${
+          `w-full border border-dashed rounded-lg p-4 text-center cursor-pointer transition-colors ${
             isDragging
               ? "border-blue-500 bg-blue-50"
               : "border-gray-300 hover:border-gray-400"
@@ -127,24 +137,24 @@ const FileUploaderForm = <TFieldValues extends FieldValues>({
           className="hidden"
         />
         <div className={"flex flex-col items-center"}>
-          <ImagePlus className={"text-gray-500 mb-2"} />
-          <Text type={"smallBody"} className="text-gray-500">
+          <ImagePlus className={"text-tmp07 mb-2"} />
+          <Text type={"smallBody"}>
             Drop your GeoJSON file here, or <b>browse</b>
           </Text>
-          {fileName && (
-            <Text type={"tip"} className="mt-2 font-medium text-gray-900">
-              {fileName}
+          {uploadedFileName && (
+            <Text type={"tip"} className="mt-2 font-medium">
+              {uploadedFileName}
             </Text>
           )}
         </div>
       </div>
       {error && (
         <p className="text-xs text-red-500 mt-1">
-          {error.message || "Invalid GeoJSON format"}
+          {error?.data?.message || error?.message}
         </p>
       )}
     </div>
   );
 };
 
-export default FileUploaderForm;
+export default GeoJsonUploaderForm;

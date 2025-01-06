@@ -1,10 +1,10 @@
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
-import { usePostGenerateProjectMutation } from "@/services/create-project-api";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { setStep } from "@/store/steps/slice";
 import { useAppDispatch } from "@/hooks/redux/redux-hooks";
 import { toast } from "sonner";
+import { usePostGenerateProjectMutation } from "@/services/create-project/create-project-api";
 
 export enum CreateProjectFormFields {
   NAME = "name",

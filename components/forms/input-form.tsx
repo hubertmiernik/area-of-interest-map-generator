@@ -5,7 +5,7 @@ import {
   UseControllerProps,
 } from "react-hook-form";
 import { Input, InputProps } from "@/components/ui/input";
-import { TextArea } from "@/components/ui/textArea";
+import { TextArea } from "@/components/ui/text-area";
 
 export type ControllerProps<
   TInputComponentProps,
@@ -26,6 +26,7 @@ const InputForm = <
   placeholder,
   className,
   onFocus,
+  optional,
   ...rest
 }: ControllerProps<InputProps, TFieldValues, TFieldName>) => {
   const { field, fieldState } = useController({
@@ -39,7 +40,7 @@ const InputForm = <
   const { value, onChange, onBlur } = field;
 
   return (
-    <div>
+    <div className={className}>
       {type === "textArea" ? (
         <TextArea
           label={label}
@@ -50,6 +51,7 @@ const InputForm = <
           error={!!error}
           className={className}
           onFocus={onFocus}
+          optional={optional}
         />
       ) : (
         <Input
@@ -61,11 +63,12 @@ const InputForm = <
           onBlur={onBlur}
           placeholder={placeholder}
           error={!!error}
-          className={className}
+          optional={optional}
         />
       )}
-
-      {error && <p className={"text-xs text-red absolute"}>{error.message}</p>}
+      {error && (
+        <p className={"text-xs text-red-600 absolute"}>{error.message}</p>
+      )}
     </div>
   );
 };

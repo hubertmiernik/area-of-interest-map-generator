@@ -11,31 +11,24 @@ import {
   REGISTER,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import { authApi } from "@/services/login-api/auth-api";
-import authReducer, { authReducerPath } from "@/store/auth/slice";
-import sidebarReducer, { sidebarReducerPath } from "@/store/sidebar/slice";
-import eventReducer, { eventReducerPath } from "@/store/events/slice";
-
-import { profileApi } from "@/services/profile-api/profile-api";
+import stepReducer, { stepReducerPath } from "@/store/steps/slice";
+import { createProjectApi } from "@/services/create-project/create-project-api";
 
 const persistConfig = {
   key: "root",
   version: 1,
   storage,
-  whitelist: [authReducerPath],
-  blacklist: [authApi.reducerPath, profileApi.reducerPath, sidebarReducerPath],
+  whitelist: [],
+  blacklist: [createProjectApi.reducerPath, stepReducerPath],
 };
 
 const appReducer = combineReducers({
-  [authApi.reducerPath]: authApi.reducer,
-  [profileApi.reducerPath]: profileApi.reducer,
-  [authReducerPath]: authReducer,
-  [sidebarReducerPath]: sidebarReducer,
-  [eventReducerPath]: eventReducer,
+  [createProjectApi.reducerPath]: createProjectApi.reducer,
+  [stepReducerPath]: stepReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, appReducer);
-const middlewares = [authApi.middleware, profileApi.middleware];
+const middlewares = [createProjectApi.middleware];
 
 export const store = configureStore({
   reducer: persistedReducer,

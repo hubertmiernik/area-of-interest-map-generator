@@ -2,6 +2,7 @@
 
 import React from "react";
 import {
+  FieldError,
   FieldPath,
   FieldValues,
   useController,
@@ -9,6 +10,12 @@ import {
 } from "react-hook-form";
 import { DatePickerWithRange } from "@/components/ui/date-picker-with-range";
 import { DateRange } from "react-day-picker";
+import Text from "@/components/ui/text";
+
+type ExtendedFieldError = FieldError & {
+  from?: FieldError;
+  to?: FieldError;
+};
 
 type DatePickerWithRangeFormProps<
   TFieldValues extends FieldValues = FieldValues,
@@ -37,29 +44,32 @@ const DatePickerWithRangeForm = <
   });
 
   const { value, onChange } = field;
-  const { error } = fieldState;
+  const { error } = fieldState as { error: ExtendedFieldError | undefined };
 
   const handleDateChange = (date: DateRange | undefined) => {
     onChange(date);
   };
 
-  console.log("value", value);
-
   return (
     <div className={className}>
       {label && (
-        <label
-          className={`block text-sm font-medium mb-2 ${error ? "text-red-500" : ""}`}
-        >
-          {label}
-        </label>
+        <Text type={"smallBody"}>
+          <label className={`block ${error ? "text-red-600" : ""}`}>
+            {label}
+          </label>
+        </Text>
       )}
       <DatePickerWithRange
-        className={error ? "border-red-500" : ""}
+        className={`${error && "border-red-600"} w-full`}
         value={value}
         onChange={handleDateChange}
       />
-      {error && <p className="text-xs text-red-500 mt-1">{error.message}</p>}
+      {error?.from && (
+        <p className="text-xs text-red-600 mt-1">{error.from?.message}</p>
+      )}
+      {error?.to && (
+        <p className="text-xs text-red-600 mt-1">{error.to?.message}</p>
+      )}
     </div>
   );
 };

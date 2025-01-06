@@ -1,9 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { apiPaths } from "@/services/paths";
 import {
   TGenerateProjectRequest,
   TGenerateProjectResponse,
-} from "@/services/types";
+} from "@/services/create-project/types";
+import { apiPaths } from "@/services/create-project/paths";
 
 enum ETags {
   PROJECT = "project",

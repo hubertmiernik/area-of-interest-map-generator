@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { addDays, format } from "date-fns";
+import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { DateRange } from "react-day-picker";
 
@@ -13,51 +13,75 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useBreakpoint } from "@/hooks/common/use-breakpoint";
+
+type DatePickerWithRangeProps = {
+  className?: string;
+  value?: DateRange;
+  onChange?: (value: DateRange | undefined) => void;
+};
 
 export function DatePickerWithRange({
   className,
-}: React.HTMLAttributes<HTMLDivElement>) {
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from: new Date(2022, 0, 20),
-    to: addDays(new Date(2022, 0, 20), 20),
-  });
+  value,
+  onChange,
+}: DatePickerWithRangeProps) {
+  const { isMd } = useBreakpoint("md");
+
+  const [tempDate, setTempDate] = React.useState<DateRange | undefined>(value);
+  const [open, setOpen] = React.useState(false);
+
+  const handleSave = () => {
+    if (onChange) {
+      onChange(tempDate);
+    }
+    setOpen(false);
+  };
 
   return (
     <div className={cn("grid gap-2", className)}>
-      <Popover>
+      <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
             id="date"
             variant={"outline"}
             className={cn(
-              "w-[300px] justify-start text-left font-normal",
-              !date && "text-muted-foreground",
+              "bg-transparent border-border justify-start text-left font-normal text-tmp07 hover:bg-transparent hover:text-tmp07",
+              !value && "text-muted-foreground",
             )}
           >
             <CalendarIcon />
-            {date?.from ? (
-              date.to ? (
+            {value?.from ? (
+              value.to ? (
                 <>
-                  {format(date.from, "LLL dd, y")} -{" "}
-                  {format(date.to, "LLL dd, y")}
+                  {format(value.from, "LLL dd, y")} -{" "}
+                  {format(value.to, "LLL dd, y")}
                 </>
               ) : (
-                format(date.from, "LLL dd, y")
+                format(value.from, "LLL dd, y")
               )
             ) : (
               <span>Pick a date</span>
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
+        <PopoverContent
+          className="w-auto p-0"
+          align="center"
+          side={"bottom"}
+          sideOffset={isMd ? 0 : -300}
+        >
           <Calendar
             initialFocus
             mode="range"
-            defaultMonth={date?.from}
-            selected={date}
-            onSelect={setDate}
+            defaultMonth={tempDate?.from}
+            selected={tempDate}
+            onSelect={setTempDate}
             numberOfMonths={2}
           />
+          <div className="flex justify-end p-3">
+            <Button onClick={handleSave}>Save</Button>
+          </div>
         </PopoverContent>
       </Popover>
     </div>

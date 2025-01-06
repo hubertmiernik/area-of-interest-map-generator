@@ -1,50 +1,35 @@
-import React, { useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import Lottie from "lottie-react";
 import animationData from "@/public/animations/tick.json";
+import { useAppSelector } from "@/hooks/redux/redux-hooks";
+import { selectIsLastStep, selectStep } from "@/store/steps/slice";
+import Text from "@/components/ui/text";
 
-const StepForm: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState(1);
+const Steps: React.FC = () => {
+  const currentStep = useAppSelector(selectStep);
+  const lastStep = useAppSelector(selectIsLastStep);
 
-  const steps = [1, 2, 3, 4, 5];
-
-  const handleNextStep = () => {
-    if (currentStep < steps.length) {
-      setCurrentStep(currentStep + 1);
-    }
-  };
-
-  const handlePreviousStep = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
-
-  const AnimatedTick = (
-    <Lottie
-      animationData={animationData}
-      loop={false}
-      // className={
-      //   "md:w-[14rem] w-[10rem] md:mt-[-6rem] mt-[-2rem] mb-[1rem]"
-      // }
-    />
-  );
+  const steps = [1, 2, 3, 4];
+  const stepTitles = ["Name", "Description", "Dates", "Area"];
 
   return (
-    <div className="w-full max-w-xl mx-auto mt-10">
+    <div className={`w-full max-w-xl mx-auto ${lastStep && "hidden"}`}>
       <div className="flex items-center justify-between mb-8 relative">
         {steps.map((step, index) => (
-          <div key={step} className="flex items-center relative w-full">
-            {/* Step Circle */}
+          <div
+            key={step}
+            className="flex items-center relative w-full flex-col gap-2"
+          >
             <motion.div
-              className={`relative z-10 w-12 h-12 flex items-center justify-center rounded-full border-2 ${
+              className={`relative z-10 w-10 h-10 md:h-12 md:w-12 flex items-center justify-center rounded-full ${
                 currentStep >= step
-                  ? "border-blue-500 bg-blue-500 text-white"
-                  : "border-gray-300 bg-white text-gray-500"
+                  ? "bg-tmp02 text-tmp07 font-medium"
+                  : "border-gray-300 bg-tmp06 text-tmp07"
               }`}
               initial={{ scale: 1 }}
               animate={{
-                scale: currentStep === step ? 1.2 : 1, // Bounce effect
+                scale: currentStep === step ? 1.2 : 1,
               }}
               transition={{
                 type: "spring",
@@ -54,57 +39,37 @@ const StepForm: React.FC = () => {
               }}
             >
               {currentStep >= step + 1 ? (
-                <Lottie
-                  animationData={animationData}
-                  loop={false}
-                  // className={
-                  //   "md:w-[14rem] w-[10rem] md:mt-[-6rem] mt-[-2rem] mb-[1rem]"
-                  // }
-                />
+                <Lottie animationData={animationData} loop={false} />
               ) : (
                 step
               )}
             </motion.div>
-
-            {/* Line */}
+            <Text type={"body"} className={"font-normal"}>
+              {stepTitles[index]}
+            </Text>
             {index < steps.length - 1 && (
-              <motion.div
-                className={`absolute top-1/2 left-[calc(20%+1.5rem)] h-1 transform -translate-y-1/2 ${
-                  currentStep > step ? "bg-blue-500" : "bg-gray-300"
-                }`}
-                initial={{ width: "0%" }}
-                animate={{
-                  width: currentStep > step ? "100%" : "0%",
-                }}
-                transition={{
-                  duration: 0.4,
-                  ease: "easeInOut",
-                }}
-              ></motion.div>
+              <>
+                <div
+                  className={`absolute top-[20px] md:top-[24px] left-[1.5rem] md:left-[5rem] h-[3px] transform -translate-y-1/2 w-full bg-tmp06`}
+                ></div>
+                <motion.div
+                  className={`absolute top-[20px] md:top-[24px] left-[1.5rem] md:left-[5rem] h-[3px] transform -translate-y-1/2 bg-tmp02`}
+                  initial={{ width: "0%" }}
+                  animate={{
+                    width: currentStep > step ? "100%" : "0%",
+                  }}
+                  transition={{
+                    duration: 0.4,
+                    ease: "easeInOut",
+                  }}
+                ></motion.div>
+              </>
             )}
           </div>
         ))}
-      </div>
-
-      {/* Buttons */}
-      <div className="flex justify-between">
-        <button
-          onClick={handlePreviousStep}
-          className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 disabled:bg-gray-200"
-          disabled={currentStep === 1}
-        >
-          Wstecz
-        </button>
-        <button
-          onClick={handleNextStep}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-blue-300"
-          disabled={currentStep === steps.length}
-        >
-          Dalej
-        </button>
       </div>
     </div>
   );
 };
 
-export default StepForm;
+export default Steps;
